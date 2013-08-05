@@ -1,6 +1,6 @@
 # nodeit [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 
-> NodeJS text editor for OSX
+> NodeJS text editor
 
 ## Getting started
 
