@@ -1,0 +1,25 @@
+{
+  "name": "nodeit",
+  "version": "0.0.0",
+  "description": "NodeJS text editor for OSX",
+  "main": "index.js",
+  "dependencies": {
+    "javascript-editor": "~0.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:alanshaw/nodeit.git"
+  },
+  "keywords": [
+    "editor"
+  ],
+  "author": "Alan Shaw",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alanshaw/nodeit/issues"
+  }
+}
