@@ -1,6 +1,6 @@
 ![nodeit logo](https://raw.github.com/alanshaw/nodeit/master/design/icon_128x128.png)
 
-# nodeit [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
+# nodeit [![Dependency Status](https://david-dm.org/alanshaw/nodeit.png)](https://david-dm.org/alanshaw/nodeit) [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 
 > NodeJS text editor
 
