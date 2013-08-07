@@ -6,16 +6,16 @@
 
 ## Getting started
 
-Install browserify:
+Install dependencies:
 
 ```sh
-npm install -g browserify
+npm install
 ```
 
 Build:
 
 ```sh
-browserify js/main.js -o js/bundle.js
+grunt
 ```
 
 ## Credits
