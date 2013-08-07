@@ -42,8 +42,6 @@ nodeit.ct.on("open", function (path, contents) {
 var tabsEl = $("#tabs")
   , editorEl = $("#editor")
   , editor = CodeMirror(editorEl[0], {
-      value: "// hello world\n",
-      mode: "javascript",
       lineNumbers: true,
       autofocus: true,
       matchBrackets: true,
@@ -93,7 +91,6 @@ tabsEl.bind('chromeTabRender', function () {
   }
 })
 
-
 function onResize () {
   editorEl.height($(window).height() - tabsEl.outerHeight())
 }
@@ -103,4 +100,6 @@ $(window).resize(onResize).resize()
 
 // TEST
 
-nodeit.ct.emit("open", "", "")
+$(function () {
+  nodeit.ct.emit("open", "", "")
+})

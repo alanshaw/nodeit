@@ -3,8 +3,10 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     browserify: {
-      files: {
-        "js/bundle.js": "js/main.js"
+      dist: {
+        files: {
+          "js/bundle.js": "js/main.js"
+        }
       }
     },
     watch: {
