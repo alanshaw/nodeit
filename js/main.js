@@ -1,43 +1,106 @@
-var createEditor = require('javascript-editor')
+var events = require('events')
+  , inherits = require('inherits')
 
-var editor = createEditor({ container: document.querySelector('#editor') })
-  , $tabs = $("#tabs")
-  , $editor = $("#editor")
+require("codemirror")
 
-editor.on('change', function() {
-  var value = editor.getValue()
+window.nodeit = window.nodeit || {}
+
+function Container () {}
+
+inherits(Container, events.EventEmitter)
+
+nodeit.ct = new Container()
+
+function pathToMode (path) {
+  return "javascript"
+}
+
+function pathToTitle (path) {
+  if (!path) {
+    return "untitled"
+  }
+  var parts = path.split("/")
+  return parts[parts.length - 1]
+}
+
+nodeit.ct.on("open", function (path, contents) {
+  var doc = CodeMirror.Doc(contents, pathToMode(path), 0)
+  
+  chromeTabs.addNewTab(tabsEl, {
+    title: pathToTitle(path),
+    value: contents,
+    data: {
+      docId: doc.id,
+      path: path
+    }
+  })
+  
+  docs.push(doc)
+  editor.swapDoc(doc)
 })
 
-editor.on('valid', function(noErrors) {
-  // noErrors is a boolean
-})
+var tabsEl = $("#tabs")
+  , editorEl = $("#editor")
+  , editor = CodeMirror(editorEl[0], {
+      value: "// hello world\n",
+      mode: "javascript",
+      lineNumbers: true,
+      autofocus: true,
+      matchBrackets: true,
+      indentWithTabs: false,
+      smartIndent: true,
+      tabSize: 2,
+      indentUnit: 2,
+      updateInterval: 500,
+      dragAndDrop: true
+    })
 
-var $chromeTabsExampleShell = $tabs
+var docs = [editor.getDoc()]
+
+function findDocById (id) {
+  for (var i = 0, len = docs.length; i < len; ++i) {
+    if (docs[i].id == id) {
+      return docs[i]
+    }
+  }
+  return null
+}
 
 chromeTabs.init({
-  $shell: $chromeTabsExampleShell,
+  $shell: tabsEl,
   minWidth: 45,
-  maxWidth: 180
-});
+  maxWidth: 160
+})
 
-chromeTabs.addNewTab($chromeTabsExampleShell, {
+chromeTabs.addNewTab(tabsEl, {
   //favicon: 'img/icon-doc.svg',
   title: 'untitled',
   data: {
-    timeAdded: +new Date()
+    docId: docs[0].id
   }
 })
 
-$chromeTabsExampleShell.bind('chromeTabRender', function(){
-  var $currentTab = $chromeTabsExampleShell.find('.chrome-tab-current');
-  if ($currentTab.length && window['console'] && console.log) {
-    console.log('Current tab index', $currentTab.index(), 'title', $.trim($currentTab.text()), 'data', $currentTab.data('tabData').data);
+tabsEl.bind('chromeTabRender', function () {
+  var tab = tabsEl.find('.chrome-tab-current')
+    , data = tab.data('tabData').data
+  
+  if (tab.length && window['console'] && console.log) {
+    console.log('Current tab index', tab.index(), 'title', $.trim(tab.text()), 'data', data)
+    var doc = findDocById(data.docId)
+    if (doc && doc != editor.getDoc()) {
+      editor.swapDoc(doc)
+    }
   }
 })
 
 
 function onResize () {
-  $editor.height($(window).height() - $tabs.outerHeight())
+  editorEl.height($(window).height() - tabsEl.outerHeight())
 }
 
 $(window).resize(onResize).resize()
+
+
+// TEST
+
+nodeit.ct.emit("open", "", "")
