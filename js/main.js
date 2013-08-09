@@ -1,5 +1,6 @@
-var events = require('events')
-  , inherits = require('inherits')
+var events = require("events")
+  , inherits = require("inherits")
+  , cmUtil = require("./util/codemirror")
 
 require("codemirror")
 
@@ -11,10 +12,6 @@ inherits(Container, events.EventEmitter)
 
 nodeit.ct = new Container()
 
-function pathToMode (path) {
-  return "javascript"
-}
-
 function pathToTitle (path) {
   if (!path) {
     return "untitled"
@@ -24,19 +21,25 @@ function pathToTitle (path) {
 }
 
 nodeit.ct.on("open", function (path, contents) {
-  var doc = CodeMirror.Doc(contents, pathToMode(path), 0)
+  console.log("Open file", path)
   
-  chromeTabs.addNewTab(tabsEl, {
-    title: pathToTitle(path),
-    value: contents,
-    data: {
-      docId: doc.id,
-      path: path
-    }
+  cmUtil.loadMode(path, function (er, mode) {
+    if (er) return console.error("Failed to load mode for", path)
+    
+    var doc = CodeMirror.Doc(contents, mode, 0)
+    
+    chromeTabs.addNewTab(tabsEl, {
+      title: pathToTitle(path),
+      value: contents,
+      data: {
+        docId: doc.id,
+        path: path
+      }
+    })
+    
+    docs.push(doc)
+    editor.swapDoc(doc)
   })
-  
-  docs.push(doc)
-  editor.swapDoc(doc)
 })
 
 var tabsEl = $("#tabs")
@@ -101,5 +104,5 @@ $(window).resize(onResize).resize()
 // TEST
 
 $(function () {
-  nodeit.ct.emit("open", "", "")
+  nodeit.ct.emit("open", "foo.js", "")
 })
