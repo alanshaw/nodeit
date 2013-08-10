@@ -39,17 +39,91 @@ function Nodeit (bridge, opts) {
   
   this.tabsEl.bind("chromeTabRender", this.onTabChange.bind(this))
   
-  this.on("open", this.onOpen.bind(this))
-  
   $(window).resize(this.onWindowResize.bind(this)).resize()
   
   setImmediate(function () { this.emit("ready") }.bind(this))
+  
+  this.log("nodeit ready")
 }
 
 inherits(Nodeit, events.EventEmitter)
 
 /**
- * Find a CodeMirror document by ID
+ * Set the nodeit bridge object
+ * @param bridge
+ */
+Nodeit.prototype.setBridge = function (bridge) {
+  this.bridge = bridge
+}
+
+Nodeit.prototype.log = function () {
+  this.bridge.log(Array.prototype.slice.call(arguments).join(" "))
+}
+
+/**
+ * Open a file
+ * @param {String} path Path to file
+ * @param {String} contents File contents
+ * @param {Function} cb Callback
+ */
+Nodeit.prototype.open = function (path, contents, cb) {
+  this.log("Open file", path)
+  
+  cb = cb || function (er) {
+    if (er) this.log(er)
+  }.bind(this)
+  
+  // TODO: Don't open if already open, switch to open doc tab
+  
+  cmUtil.loadMode(path, function (er, mode) {
+    if (er) return cb(er)
+    
+    var doc = CodeMirror.Doc(contents, mode, 0)
+    
+    // Store some nodeit data on the document
+    doc.nodeit = {
+      path: path,
+      saved: contents ? true : false
+    }
+    
+    doc.on("change", this.onDocChange.bind(this))
+    
+    chromeTabs.addNewTab(this.tabsEl, {
+      //favicon: 'img/icon-doc.svg',
+      title: Nodeit.pathToTitle(path),
+      value: contents,
+      data: {docId: doc.id}
+    })
+    
+    this.docs.push(doc)
+    this.editor.swapDoc(doc)
+    
+    cb(null, doc)
+    
+    this.emit("docOpen", doc)
+    
+  }.bind(this))
+}
+
+/**
+ * Save the current document to disk, or whatever.
+ */
+Nodeit.prototype.save = function () {
+  var doc = this.editor.getDoc()
+  
+  if (doc.nodeit.saved) {
+    return
+  }
+  
+  this.bridge.save(doc.nodeit.path, doc.getValue(), function (er) {
+    if (er) return this.log(er)
+    doc.nodeit.saved = true
+    this.emit("docSave", doc)
+  }.bind(this))
+}
+
+/**
+ * Find an open CodeMirror document by ID
  * @param id
  * @returns {CodeMirror.Doc}
  */
@@ -63,52 +137,32 @@ Nodeit.prototype.findDocById = function (id) {
 }
 
 /**
- * On file open handler
- * @private
- */
-Nodeit.prototype.onOpen = function (path, contents) {
-  console.log("Open file", path)
-  
-  cmUtil.loadMode(path, function (er, mode) {
-    if (er) return console.error("Failed to load mode for", path)
-    
-    var doc = CodeMirror.Doc(contents, mode, 0)
-    
-    chromeTabs.addNewTab(this.tabsEl, {
-      //favicon: 'img/icon-doc.svg',
-      title: Nodeit.pathToTitle(path),
-      value: contents,
-      data: {
-        docId: doc.id,
-        path: path
-      }
-    })
-    
-    this.docs.push(doc)
-    this.editor.swapDoc(doc)
-    
-  }.bind(this))
-}
-
-/**
- * On tab change handler
  * @private
  */
 Nodeit.prototype.onTabChange = function () {
-  var tab = this.tabsEl.find('.chrome-tab-current')
-    , data = tab.data('tabData').data
-  
-  if (tab.length && window['console'] && console.log) {
-    console.log('Current tab index', tab.index(), 'title', $.trim(tab.text()), 'data', data)
-    var doc = this.findDocById(data.docId)
-    if (doc && doc != this.editor.getDoc()) {
-      this.editor.swapDoc(doc)
-    }
+  var tab = this.tabsEl.find(".chrome-tab-current")
+    , data = tab.data("tabData").data
+
+  this.log("Current tab index", tab.index(), "title", $.trim(tab.text()), "data", data)
+
+  var doc = this.findDocById(data.docId)
+    , prev = this.editor.getDoc()
+
+  if (doc && doc != prev) {
+    this.editor.swapDoc(doc)
+    this.emit("docSwap", doc, prev)
   }
 }
 
 /**
- * On window resize handler
+ * @private
+ * @param doc
+ */
+Nodeit.prototype.onDocChange = function (doc) { 
+  doc.nodeit.saved = false
+}
+
+/**
  * @private
  */
 Nodeit.prototype.onWindowResize = function () {
@@ -116,7 +170,7 @@ Nodeit.prototype.onWindowResize = function () {
 }
 
 /**
- * Convert a file path to a tab title
+ * Convert a file path to a human readable title suitable for showing on a tab, for instance
  * @satic
  * @param path
  * @returns {*}
@@ -136,7 +190,3 @@ window.nodeit = new Nodeit(window.nodeitBridge || bridge)
 $(function () {
   nodeit.emit("open", "foo.js", "")
 })
-
-setTimeout(function () {
-  nodeitBridge.log("LOG FROM NODEIT")
-}, 2000)
