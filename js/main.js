@@ -184,9 +184,3 @@ Nodeit.pathToTitle = function (path) {
 }
 
 window.nodeit = new Nodeit(window.nodeitBridge || bridge)
-
-// TEST
-
-$(function () {
-  nodeit.emit("open", "foo.js", "")
-})
