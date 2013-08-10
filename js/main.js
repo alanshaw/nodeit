@@ -1,50 +1,18 @@
 var events = require("events")
   , inherits = require("inherits")
   , cmUtil = require("./util/codemirror")
+  , bridge = require("./bridge")
 
+require("setimmediate")
 require("codemirror")
 
-window.nodeit = window.nodeit || {}
-
-function Container () {}
-
-inherits(Container, events.EventEmitter)
-
-nodeit.ct = new Container()
-
-function pathToTitle (path) {
-  if (!path) {
-    return "untitled"
-  }
-  var parts = path.split("/")
-  return parts[parts.length - 1]
-}
-
-nodeit.ct.on("open", function (path, contents) {
-  console.log("Open file", path)
+function Nodeit (bridge, opts) {
+  this.bridge = bridge
+  this.opts = opts || {}
   
-  cmUtil.loadMode(path, function (er, mode) {
-    if (er) return console.error("Failed to load mode for", path)
-    
-    var doc = CodeMirror.Doc(contents, mode, 0)
-    
-    chromeTabs.addNewTab(tabsEl, {
-      title: pathToTitle(path),
-      value: contents,
-      data: {
-        docId: doc.id,
-        path: path
-      }
-    })
-    
-    docs.push(doc)
-    editor.swapDoc(doc)
-  })
-})
-
-var tabsEl = $("#tabs")
-  , editorEl = $("#editor")
-  , editor = CodeMirror(editorEl[0], {
+  this.tabsEl = $(this.opts.tabsEl || "#tabs")
+  this.editorEl = $(this.opts.editorEl || "#editor")
+  this.editor = CodeMirror(this.editorEl[0], {
       lineNumbers: true,
       autofocus: true,
       matchBrackets: true,
@@ -55,54 +23,120 @@ var tabsEl = $("#tabs")
       updateInterval: 500,
       dragAndDrop: true
     })
+  
+  this.docs = [this.editor.getDoc()]
+  
+  chromeTabs.init({
+    $shell: this.tabsEl,
+    minWidth: 45,
+    maxWidth: 160
+  })
+  
+  chromeTabs.addNewTab(this.tabsEl, {
+    title: "untitled",
+    data: {docId: this.docs[0].id}
+  })
+  
+  this.tabsEl.bind("chromeTabRender", this.onTabChange.bind(this))
+  
+  this.on("open", this.onOpen.bind(this))
+  
+  $(window).resize(this.onWindowResize.bind(this)).resize()
+  
+  setImmediate(function () { this.emit("ready") }.bind(this))
+}
 
-var docs = [editor.getDoc()]
+inherits(Nodeit, events.EventEmitter)
 
-function findDocById (id) {
-  for (var i = 0, len = docs.length; i < len; ++i) {
-    if (docs[i].id == id) {
-      return docs[i]
+/**
+ * Find a CodeMirror document by ID
+ * @param id
+ * @returns {CodeMirror.Doc}
+ */
+Nodeit.prototype.findDocById = function (id) {
+  for (var i = 0, len = this.docs.length; i < len; ++i) {
+    if (this.docs[i].id == id) {
+      return this.docs[i]
     }
   }
   return null
 }
 
-chromeTabs.init({
-  $shell: tabsEl,
-  minWidth: 45,
-  maxWidth: 160
-})
+/**
+ * On file open handler
+ * @private
+ */
+Nodeit.prototype.onOpen = function (path, contents) {
+  console.log("Open file", path)
+  
+  cmUtil.loadMode(path, function (er, mode) {
+    if (er) return console.error("Failed to load mode for", path)
+    
+    var doc = CodeMirror.Doc(contents, mode, 0)
+    
+    chromeTabs.addNewTab(this.tabsEl, {
+      //favicon: 'img/icon-doc.svg',
+      title: Nodeit.pathToTitle(path),
+      value: contents,
+      data: {
+        docId: doc.id,
+        path: path
+      }
+    })
+    
+    this.docs.push(doc)
+    this.editor.swapDoc(doc)
+    
+  }.bind(this))
+}
 
-chromeTabs.addNewTab(tabsEl, {
-  //favicon: 'img/icon-doc.svg',
-  title: 'untitled',
-  data: {
-    docId: docs[0].id
-  }
-})
-
-tabsEl.bind('chromeTabRender', function () {
-  var tab = tabsEl.find('.chrome-tab-current')
+/**
+ * On tab change handler
+ * @private
+ */
+Nodeit.prototype.onTabChange = function () {
+  var tab = this.tabsEl.find('.chrome-tab-current')
     , data = tab.data('tabData').data
   
   if (tab.length && window['console'] && console.log) {
     console.log('Current tab index', tab.index(), 'title', $.trim(tab.text()), 'data', data)
-    var doc = findDocById(data.docId)
-    if (doc && doc != editor.getDoc()) {
-      editor.swapDoc(doc)
+    var doc = this.findDocById(data.docId)
+    if (doc && doc != this.editor.getDoc()) {
+      this.editor.swapDoc(doc)
     }
   }
-})
-
-function onResize () {
-  editorEl.height($(window).height() - tabsEl.outerHeight())
 }
 
-$(window).resize(onResize).resize()
+/**
+ * On window resize handler
+ * @private
+ */
+Nodeit.prototype.onWindowResize = function () {
+  this.editorEl.height($(window).height() - this.tabsEl.outerHeight())
+}
 
+/**
+ * Convert a file path to a tab title
+ * @satic
+ * @param path
+ * @returns {*}
+ */
+Nodeit.pathToTitle = function (path) {
+  if (!path) {
+    return "untitled"
+  }
+  var parts = path.split("/")
+  return parts[parts.length - 1]
+}
+
+window.nodeit = new Nodeit(window.nodeitBridge || bridge)
 
 // TEST
 
 $(function () {
-  nodeit.ct.emit("open", "foo.js", "")
+  nodeit.emit("open", "foo.js", "")
 })
+
+setTimeout(function () {
+  nodeitBridge.log("LOG FROM NODEIT")
+}, 2000)
