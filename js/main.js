@@ -24,12 +24,16 @@ function Nodeit (bridge, opts) {
       dragAndDrop: true
     })
   
-  this.editor.getDoc().nodeit = {
+  var doc = this.editor.getDoc()
+  
+  doc.nodeit = {
     path: "",
     saved: false
   }
   
-  this.docs = [this.editor.getDoc()]
+  doc.on("change", this.onDocChange.bind(this))
+  
+  this.docs = [doc]
   
   chromeTabs.init({
     $shell: this.tabsEl,
@@ -39,7 +43,7 @@ function Nodeit (bridge, opts) {
   
   chromeTabs.addNewTab(this.tabsEl, {
     title: "untitled",
-    data: {docId: this.docs[0].id}
+    data: {docId: doc.id}
   })
   
   this.tabsEl.bind("chromeTabRender", this.onTabChange.bind(this))
@@ -128,7 +132,12 @@ Nodeit.prototype.save = function () {
     doc.nodeit.path = path
     doc.nodeit.saved = true
     
-    // TODO: Update tab title
+    // Update tab title
+    $(".chrome-tab", this.tabsEl).filter(function () {
+      return $(this).data("tabData").data.docId == doc.id
+    }).find(".chrome-tab-title").text(Nodeit.pathToTitle(path))
+    
+    // TODO: Update mode
     
     this.emit("docSave", doc)
   }.bind(this))
