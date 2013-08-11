@@ -4,6 +4,8 @@
 
 > NodeJS text editor
 
+Oh my god this is super alpha, but, [download the latest version](http://nodeit.org/dist/nodeit-0.0.0.dmg).
+
 ## Getting started
 
 Install dependencies:
