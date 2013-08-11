@@ -23,17 +23,7 @@ function Nodeit (bridge, opts) {
       updateInterval: 500,
       dragAndDrop: true
     })
-  
-  var doc = this.editor.getDoc()
-  
-  doc.nodeit = {
-    path: "",
-    saved: false
-  }
-  
-  doc.on("change", this.onDocChange.bind(this))
-  
-  this.docs = [doc]
+  this.docs = []
   
   chromeTabs.init({
     $shell: this.tabsEl,
@@ -41,16 +31,14 @@ function Nodeit (bridge, opts) {
     maxWidth: 160
   })
   
-  chromeTabs.addNewTab(this.tabsEl, {
-    title: "untitled",
-    data: {docId: doc.id}
-  })
-  
   this.tabsEl.bind("chromeTabRender", this.onTabChange.bind(this))
   
   $(window).resize(this.onWindowResize.bind(this)).resize()
   
-  setImmediate(function () { this.emit("ready") }.bind(this))
+  setImmediate(function () {
+    this.emit("ready")
+    bridge.ready()
+  }.bind(this))
   
   this.log("nodeit ready")
 }
@@ -199,7 +187,12 @@ Nodeit.prototype.findDocById = function (id) {
  */
 Nodeit.prototype.onTabChange = function () {
   var tab = this.tabsEl.find(".chrome-tab-current")
-    , data = tab.data("tabData").data
+  
+  if (!tab.length) {
+    return // No tabs open yet
+  }
+  
+  var data = tab.data("tabData").data
 
   this.log("Current tab index", tab.index(), "title", $.trim(tab.text()), "data", data)
 

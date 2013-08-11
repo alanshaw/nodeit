@@ -11,9 +11,11 @@ module.exports = {
   log: console.log,
 
   /**
-   * Files to open on startup?
+   * Signal to the bridge that nodeit is ready
    */
-  startupFiles: [],
+  ready: function () {
+    this.log("Ready")
+  },
 
   /**
    * Save a file to disk
