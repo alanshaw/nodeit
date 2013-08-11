@@ -8,8 +8,18 @@ module.exports.getMode = function (path) {
   
   var ext = path.slice(path.lastIndexOf(".") + 1)
   
-  if (ext == "js") {
-    return "javascript"
+  switch (ext) {
+    case "coffee": return "coffee"
+    case "css": return "css"
+    case "html": return "htmlmixed"
+    case "js": return "javascript"
+    case "less": return "less"
+    case "php": return "php"
+    case "markdown":
+    case "md": return "markdown"
+    case "sass": return "sass"
+    case "xhtml": return "htmlmixed"
+    case "xml": return "xml" 
   }
   
   return null
