@@ -24,6 +24,11 @@ function Nodeit (bridge, opts) {
       dragAndDrop: true
     })
   
+  this.editor.getDoc().nodeit = {
+    path: "",
+    saved: false
+  }
+  
   this.docs = [this.editor.getDoc()]
   
   chromeTabs.init({
@@ -111,13 +116,20 @@ Nodeit.prototype.open = function (path, contents, cb) {
 Nodeit.prototype.save = function () {
   var doc = this.editor.getDoc()
   
+  this.log("Save doc", doc.id)
+  
   if (doc.nodeit.saved) {
-    return
+    return this.log("Already saved")
   }
   
-  this.bridge.save(doc.nodeit.path, doc.getValue(), function (er) {
+  this.bridge.save(doc.nodeit.path, doc.getValue(), function (er, path) {
     if (er) return this.log(er)
+    
+    doc.nodeit.path = path
     doc.nodeit.saved = true
+    
+    // TODO: Update tab title
+    
     this.emit("docSave", doc)
   }.bind(this))
 }
