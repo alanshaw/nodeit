@@ -22,9 +22,21 @@ module.exports = {
    * @param cb Callback
    */
   save: function (path, contents, cb) {
-    console.log("Save", path)
+    this.log("Save", path)
     setImmediate(function () {
       cb(null, path, contents)
+    })
+  },
+
+  /**
+   * Open a file and retrieve contents. If no path, prompt the user to choose a file to open
+   * @param path
+   * @param cb
+   */
+  open: function (path, cb) {
+    this.log("Open", path)
+    setImmediate(function () {
+      cb(null, "/path/to/file.js", "// Nothing to see here")
     })
   }
 }

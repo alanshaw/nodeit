@@ -70,12 +70,45 @@ Nodeit.prototype.log = function () {
 }
 
 /**
+ * Create a new file
+ * @param cb
+ */
+Nodeit.prototype.neu = function (cb) {
+  this.log("New file")
+  
+  cb = cb || function (er) {
+    if (er) this.log(er)
+  }.bind(this)
+  
+  var doc = CodeMirror.Doc("", null, 0)
+  
+  // Store some nodeit data on the document
+  doc.nodeit = {
+    path: "",
+    saved: false
+  }
+  
+  doc.on("change", this.onDocChange.bind(this))
+  
+  chromeTabs.addNewTab(this.tabsEl, {
+    title: "untitled",
+    data: {docId: doc.id}
+  })
+  
+  this.docs.push(doc)
+  this.editor.swapDoc(doc)
+  
+  cb(null, doc)
+  
+  this.emit("docNew", doc)
+}
+
+/**
  * Open a file
- * @param {String} path Path to file
- * @param {String} contents File contents
+ * @param {String} path Path to file. If no path, prompt the user to choose a file to open
  * @param {Function} cb Callback
  */
-Nodeit.prototype.open = function (path, contents, cb) {
+Nodeit.prototype.open = function (path, cb) {
   this.log("Open file", path)
   
   cb = cb || function (er) {
@@ -84,33 +117,37 @@ Nodeit.prototype.open = function (path, contents, cb) {
   
   // TODO: Don't open if already open, switch to open doc tab
   
-  cmUtil.loadMode(path, function (er, mode) {
+  this.bridge.open(path, function (er, path, contents) {
     if (er) return cb(er)
     
-    var doc = CodeMirror.Doc(contents, mode, 0)
-    
-    // Store some nodeit data on the document
-    doc.nodeit = {
-      path: path,
-      saved: contents ? true : false
-    }
-    
-    doc.on("change", this.onDocChange.bind(this))
-    
-    chromeTabs.addNewTab(this.tabsEl, {
-      //favicon: 'img/icon-doc.svg',
-      title: Nodeit.pathToTitle(path),
-      value: contents,
-      data: {docId: doc.id}
-    })
-    
-    this.docs.push(doc)
-    this.editor.swapDoc(doc)
-    
-    cb(null, doc)
-    
-    this.emit("docOpen", doc)
-    
+    cmUtil.loadMode(path, function (er, mode) {
+      if (er) return cb(er)
+      
+      var doc = CodeMirror.Doc(contents, mode, 0)
+      
+      // Store some nodeit data on the document
+      doc.nodeit = {
+        path: path,
+        saved: true
+      }
+      
+      doc.on("change", this.onDocChange.bind(this))
+      
+      chromeTabs.addNewTab(this.tabsEl, {
+        //favicon: 'img/icon-doc.svg',
+        title: Nodeit.pathToTitle(path),
+        value: contents,
+        data: {docId: doc.id}
+      })
+      
+      this.docs.push(doc)
+      this.editor.swapDoc(doc)
+      
+      cb(null, doc)
+      
+      this.emit("docOpen", doc)
+      
+    }.bind(this))
   }.bind(this))
 }
 
