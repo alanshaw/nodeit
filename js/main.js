@@ -14,6 +14,7 @@ function Nodeit (bridge, opts) {
   this.editorEl = $(this.opts.editorEl || "#editor")
   this.editor = CodeMirror(this.editorEl[0], {
       lineNumbers: true,
+      lineWrapping: true,
       autofocus: true,
       matchBrackets: true,
       indentWithTabs: false,
@@ -191,7 +192,32 @@ Nodeit.prototype.onTabChange = function () {
   if (!tab.length) {
     return // No tabs open yet
   }
+  /*
+  var tabs = this.tabsEl.find(".chrome-tab")
+    , docs = []
   
+  // Did a doc get removed?
+  this.docs.forEach(function (doc) {
+    var found = false
+    
+    for (var i = 0, len = tabs.length; i < len; ++i) {
+      if (tabs[i].data("tabData").data.docId == doc.id) {
+        found = true
+        break
+      }
+    }
+    
+    if (!found) {
+      // TODO: Deal with unsaved changes
+      this.emit("docClose", doc)
+    } else {
+      docs.push(doc)
+    }
+    
+  }.bind(this))
+  
+  this.docs = docs
+  */
   var data = tab.data("tabData").data
 
   this.log("Current tab index", tab.index(), "title", $.trim(tab.text()), "data", data)
