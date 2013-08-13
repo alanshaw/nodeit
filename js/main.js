@@ -192,7 +192,7 @@ Nodeit.prototype.onTabChange = function () {
   if (!tab.length) {
     return // No tabs open yet
   }
-  /*
+  
   var tabs = this.tabsEl.find(".chrome-tab")
     , docs = []
   
@@ -201,7 +201,7 @@ Nodeit.prototype.onTabChange = function () {
     var found = false
     
     for (var i = 0, len = tabs.length; i < len; ++i) {
-      if (tabs[i].data("tabData").data.docId == doc.id) {
+      if ($(tabs[i]).data("tabData").data.docId == doc.id) {
         found = true
         break
       }
@@ -209,6 +209,7 @@ Nodeit.prototype.onTabChange = function () {
     
     if (!found) {
       // TODO: Deal with unsaved changes
+      this.log("Close doc", doc.id)
       this.emit("docClose", doc)
     } else {
       docs.push(doc)
@@ -217,15 +218,14 @@ Nodeit.prototype.onTabChange = function () {
   }.bind(this))
   
   this.docs = docs
-  */
+  
   var data = tab.data("tabData").data
-
-  this.log("Current tab index", tab.index(), "title", $.trim(tab.text()), "data", data)
 
   var doc = this.findDocById(data.docId)
     , prev = this.editor.getDoc()
 
   if (doc && doc != prev) {
+    this.log("Doc swap", prev.id, " -> ", doc.id)
     this.editor.swapDoc(doc)
     this.emit("docSwap", doc, prev)
   }
