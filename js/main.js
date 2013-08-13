@@ -163,7 +163,10 @@ Nodeit.prototype.save = function () {
       return $(this).data("tabData").data.docId == doc.id
     }).find(".chrome-tab-title").text(Nodeit.pathToTitle(path))
     
-    // TODO: Update mode
+    // Update mode
+    cmUtil.loadMode(path, function (er, mode) {
+      this.editor.setOption("mode", mode)
+    }.bind(this))
     
     this.emit("docSave", doc)
   }.bind(this))
