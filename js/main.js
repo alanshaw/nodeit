@@ -187,6 +187,24 @@ Nodeit.prototype.findDocById = function (id) {
 }
 
 /**
+ * Given a document, find it's tab
+ * @param doc
+ * @returns {jQuery}
+ */
+Nodeit.prototype.findTabByDoc = function (doc) {
+  var tabs = this.tabsEl.find(".chrome-tab")
+  
+  for (var i = 0, len = tabs.length; i < len; ++i) {
+    var tab = $(tabs[i])
+    
+    if (tab.data("tabData").data.docId == doc.id) {
+      return tab
+    }
+  }
+  return null
+}
+
+/**
  * @private
  */
 Nodeit.prototype.onTabChange = function () {
@@ -196,31 +214,22 @@ Nodeit.prototype.onTabChange = function () {
     return // No tabs open yet
   }
   
-  var tabs = this.tabsEl.find(".chrome-tab")
-    , docs = []
-  
   // Did a doc get removed?
-  this.docs.forEach(function (doc) {
-    var found = false
+  this.docs = this.docs.reduce(function (docs, doc) {
     
-    for (var i = 0, len = tabs.length; i < len; ++i) {
-      if ($(tabs[i]).data("tabData").data.docId == doc.id) {
-        found = true
-        break
-      }
-    }
-    
-    if (!found) {
+    if (!this.findTabByDoc(doc)) {
+      
       // TODO: Deal with unsaved changes
       this.log("Close doc", doc.id)
       this.emit("docClose", doc)
+      
     } else {
       docs.push(doc)
     }
     
-  }.bind(this))
-  
-  this.docs = docs
+    return docs
+    
+  }.bind(this), [])
   
   var data = tab.data("tabData").data
 
