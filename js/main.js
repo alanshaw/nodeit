@@ -159,9 +159,10 @@ Nodeit.prototype.save = function () {
     doc.nodeit.saved = true
     
     // Update tab title
-    $(".chrome-tab", this.tabsEl).filter(function () {
-      return $(this).data("tabData").data.docId == doc.id
-    }).find(".chrome-tab-title").text(Nodeit.pathToTitle(path))
+    this.findTabByDoc(doc)
+      .removeClass("unsaved")
+      .find(".chrome-tab-title") // TODO: use chromeTab.updateTab
+      .text(Nodeit.pathToTitle(path))
     
     // Update mode
     cmUtil.loadMode(path, function (er, mode) {
@@ -249,6 +250,7 @@ Nodeit.prototype.onTabChange = function () {
  */
 Nodeit.prototype.onDocChange = function (doc) { 
   doc.nodeit.saved = false
+  this.findTabByDoc(doc).addClass("unsaved")
 }
 
 /**

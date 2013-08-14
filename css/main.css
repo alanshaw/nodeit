@@ -1,0 +1,3 @@
+.chrome-tab.unsaved .chrome-tab-title:after {
+  content: "*";
+}
