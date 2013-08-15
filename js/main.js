@@ -274,4 +274,17 @@ Nodeit.pathToTitle = function (path) {
   return parts[parts.length - 1]
 }
 
+/* chrome-tabs tweaks */
+
+// Disable dblclick event
+!function () {
+  var setupEvents = chromeTabs.setupEvents
+  chromeTabs.setupEvents = function ($shell) {
+    var $tabs = setupEvents.call(chromeTabs, $shell)
+    $shell.unbind('dblclick')
+    return $tabs
+  }
+}()
+
 window.nodeit = new Nodeit(window.nodeitBridge || bridge)
+
