@@ -8,7 +8,8 @@
     "events": "~0.5.0",
     "inherits": "~2.0.0",
     "codemirror": "~3.15.0",
-    "setimmediate": "~1.0.1"
+    "setimmediate": "~1.0.1",
+    "async": "~0.2.9"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

@@ -11,7 +11,7 @@ module.exports = function(grunt) {
     },
     watch: {
       js: {
-        files: ["js/**/*.js", "!js/bundle.js"],
+        files: ["{js,lib}/**/*.js", "!js/bundle.js"],
         tasks: ["browserify"]
       }
     }
