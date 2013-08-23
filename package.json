@@ -14,7 +14,8 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-browserify": "~1.2.1",
-    "grunt-contrib-watch": "~0.5.1"
+    "grunt-contrib-watch": "~0.5.1",
+    "grunt-contrib-yuidoc": "~0.4.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

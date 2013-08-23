@@ -2,6 +2,8 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    
     browserify: {
       dist: {
         files: {
@@ -9,11 +11,26 @@ module.exports = function(grunt) {
         }
       }
     },
+    
     watch: {
       js: {
         options: {atBegin: true},
         files: ["{js,lib}/**/*.js", "!js/bundle.js"],
         tasks: ["browserify"]
+      }
+    },
+  
+    yuidoc: {
+      compile: {
+        name: '<%= pkg.name %>',
+        description: '<%= pkg.description %>',
+        version: '<%= pkg.version %>',
+        url: '<%= pkg.homepage %>',
+        options: {
+          paths: 'lib',
+          //themedir: 'path/to/custom/theme/',
+          outdir: 'doc/'
+        }
       }
     }
   })
@@ -21,6 +38,7 @@ module.exports = function(grunt) {
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks("grunt-browserify")
   grunt.loadNpmTasks("grunt-contrib-watch")
+  grunt.loadNpmTasks('grunt-contrib-yuidoc')
 
   // Default task(s).
   grunt.registerTask("default", ["browserify"])
