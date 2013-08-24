@@ -32,14 +32,22 @@ module.exports = function(grunt) {
           outdir: 'doc/'
         }
       }
+    },
+    
+    "gh-pages": {
+      doc : {
+        src: ["doc/**"]
+      }
     }
   })
 
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks("grunt-browserify")
   grunt.loadNpmTasks("grunt-contrib-watch")
-  grunt.loadNpmTasks('grunt-contrib-yuidoc')
+  grunt.loadNpmTasks("grunt-contrib-yuidoc")
+  grunt.loadNpmTasks("grunt-gh-pages")
 
   // Default task(s).
   grunt.registerTask("default", ["browserify"])
+  grunt.registerTask("publish-docs", ["yuidoc", "gh-pages"])
 }

@@ -4,7 +4,8 @@
 
 > NodeJS text editor
 
-Oh my god this is super alpha, but, [download the latest version (OSX)](http://nodeit.org/dist/).
+* Oh my god this is super alpha, but, [download the latest version](http://nodeit.org/dist/).
+* [API docs](http://alanshaw.github.io/nodeit/doc/)
 
 Nodeit is built in HTML, CSS and JavaScript, using browserify to load Node modules. The idea is that it talks to a defined native bridge to do the things a web page can't do on the OS, such as save and read files from disk. Since it is on the most part just a web page, it means it'll be easy to port to different platforms, the only work needing to be done is to create a bridge for the platform. It also means that we can do exciting things like create bridges for CounchDB, GitHub, localstorage etc...
 
