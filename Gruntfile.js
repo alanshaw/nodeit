@@ -6,9 +6,11 @@ module.exports = function(grunt) {
     
     browserify: {
       dist: {
-        files: {
-          "js/bundle.js": "js/main.js"
-        }
+        files: {"js/bundle.js": "js/main.js"}
+      },
+      debug: {
+        options: {debug: true},
+        files: {"js/bundle.js": "js/main.js"}
       }
     },
     
@@ -16,7 +18,7 @@ module.exports = function(grunt) {
       js: {
         options: {atBegin: true},
         files: ["{js,lib}/**/*.js", "!js/bundle.js"],
-        tasks: ["browserify"]
+        tasks: ["browserify:debug"]
       }
     },
   
@@ -48,6 +50,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-gh-pages")
 
   // Default task(s).
-  grunt.registerTask("default", ["browserify"])
+  grunt.registerTask("default", ["browserify:dist"])
   grunt.registerTask("publish-docs", ["yuidoc", "gh-pages"])
 }
