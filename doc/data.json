@@ -1,0 +1,632 @@
+{
+    "project": {
+        "name": "nodeit",
+        "description": "NodeJS text editor",
+        "version": "0.0.2",
+        "url": ""
+    },
+    "files": {
+        "lib/util/codemirror.js": {
+            "name": "lib/util/codemirror.js",
+            "modules": {},
+            "classes": {
+                "codemirror": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/bridge.js": {
+            "name": "lib/bridge.js",
+            "modules": {},
+            "classes": {
+                "bridge": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/nodeit.js": {
+            "name": "lib/nodeit.js",
+            "modules": {},
+            "classes": {
+                "Nodeit": 1,
+                "nodeit (module)": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "codemirror": {
+            "name": "codemirror",
+            "shortname": "codemirror",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/util/codemirror.js",
+            "line": 1,
+            "description": "CodeMirror utilities",
+            "static": 1
+        },
+        "bridge": {
+            "name": "bridge",
+            "shortname": "bridge",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/bridge.js",
+            "line": 3,
+            "description": "A noop bridge that simply logs calls to the console.\nCan be used as a reference to what methods must be implemented by a container",
+            "static": 1
+        },
+        "Nodeit": {
+            "name": "Nodeit",
+            "shortname": "Nodeit",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/nodeit.js",
+            "line": 12,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "opts",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                }
+            ]
+        },
+        "nodeit (module)": {
+            "name": "nodeit (module)",
+            "shortname": "nodeit (module)",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/nodeit.js",
+            "line": 484,
+            "static": 1
+        }
+    },
+    "classitems": [
+        {
+            "file": "lib/util/codemirror.js",
+            "line": 10,
+            "description": "Get a CodeMirror mode from a file path",
+            "itemtype": "method",
+            "name": "pathToMode",
+            "params": [
+                {
+                    "name": "path",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "class": "codemirror"
+        },
+        {
+            "file": "lib/util/codemirror.js",
+            "line": 44,
+            "description": "Load a CodeMirror mode",
+            "itemtype": "method",
+            "name": "loadMode",
+            "async": 1,
+            "params": [
+                {
+                    "name": "mode",
+                    "description": ""
+                },
+                {
+                    "name": "cb",
+                    "description": ""
+                }
+            ],
+            "class": "codemirror"
+        },
+        {
+            "file": "lib/bridge.js",
+            "line": 10,
+            "description": "Log to the container's console",
+            "itemtype": "method",
+            "name": "log",
+            "class": "bridge"
+        },
+        {
+            "file": "lib/bridge.js",
+            "line": 16,
+            "description": "Signal to the bridge that nodeit is ready",
+            "itemtype": "method",
+            "name": "ready",
+            "class": "bridge"
+        },
+        {
+            "file": "lib/bridge.js",
+            "line": 24,
+            "description": "Save a file to disk",
+            "itemtype": "method",
+            "name": "save",
+            "async": 1,
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "contents",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "cb",
+                    "description": "Callback",
+                    "type": "Function"
+                }
+            ],
+            "class": "bridge"
+        },
+        {
+            "file": "lib/bridge.js",
+            "line": 39,
+            "description": "Open a file and retrieve contents. If no path, prompt the user to choose a file to open",
+            "itemtype": "method",
+            "name": "open",
+            "async": 1,
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "cb",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "bridge"
+        },
+        {
+            "file": "lib/bridge.js",
+            "line": 53,
+            "description": "Called by nodeit when a file is closed. Return an error in the callback to cancel.",
+            "itemtype": "method",
+            "name": "close",
+            "async": 1,
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "contents",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "cb",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "bridge"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 55,
+            "description": "When nodeit is ready",
+            "itemtype": "event",
+            "name": "ready",
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 59,
+            "description": "When a new document is opened",
+            "itemtype": "event",
+            "name": "docNew",
+            "params": [
+                {
+                    "name": "doc",
+                    "description": "",
+                    "type": "CodeMirror.Doc"
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 64,
+            "description": "When a document is opened",
+            "itemtype": "event",
+            "name": "docOpen",
+            "params": [
+                {
+                    "name": "doc",
+                    "description": "",
+                    "type": "CodeMirror.Doc"
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 69,
+            "description": "When a document is saved to disk, or whatever",
+            "itemtype": "event",
+            "name": "docSave",
+            "params": [
+                {
+                    "name": "doc",
+                    "description": "",
+                    "type": "CodeMirror.Doc"
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 74,
+            "description": "When a document is closed",
+            "itemtype": "event",
+            "name": "docClose",
+            "params": [
+                {
+                    "name": "doc",
+                    "description": "",
+                    "type": "CodeMirror.Doc"
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 79,
+            "description": "When the current document is swapped for another",
+            "itemtype": "event",
+            "name": "docSwap",
+            "params": [
+                {
+                    "name": "doc",
+                    "description": "The newly current document",
+                    "type": "CodeMirror.Doc"
+                },
+                {
+                    "name": "prev",
+                    "description": "The previously current document",
+                    "type": "CodeMirror.Doc"
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 87,
+            "description": "Set the nodeit bridge object",
+            "itemtype": "method",
+            "name": "setBridge",
+            "params": [
+                {
+                    "name": "bridge",
+                    "description": ""
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 96,
+            "description": "Log a message to the bridge",
+            "itemtype": "method",
+            "name": "log",
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 104,
+            "description": "Get the number of open docs",
+            "itemtype": "method",
+            "name": "count",
+            "return": {
+                "description": "",
+                "type": "Int"
+            },
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 113,
+            "description": "Retrieve the CodeMirror editor instance",
+            "itemtype": "method",
+            "name": "getEditor",
+            "return": {
+                "description": "",
+                "type": "CodeMirror"
+            },
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 122,
+            "description": "Create a new file",
+            "itemtype": "method",
+            "name": "neu",
+            "async": 1,
+            "params": [
+                {
+                    "name": "cb",
+                    "description": "",
+                    "type": "Function",
+                    "optional": true
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 158,
+            "description": "Open a file",
+            "itemtype": "method",
+            "name": "open",
+            "async": 1,
+            "params": [
+                {
+                    "name": "path",
+                    "description": "Path to file. If no path, prompt the user to choose a file to open",
+                    "type": "String",
+                    "optional": true
+                },
+                {
+                    "name": "cb",
+                    "description": "Callback",
+                    "type": "Function",
+                    "optional": true
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 216,
+            "description": "Save the passed document to disk, or whatever. If no document passed, default to current document.",
+            "itemtype": "method",
+            "name": "save",
+            "async": 1,
+            "params": [
+                {
+                    "name": "doc",
+                    "description": "Document to save",
+                    "type": "CodeMirror.Doc",
+                    "optional": true
+                },
+                {
+                    "name": "cb",
+                    "description": "Callback",
+                    "type": "Function",
+                    "optional": true
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 265,
+            "description": "Close the passed document, prompting for save if changed. If no document passed, default to current document.",
+            "itemtype": "method",
+            "name": "close",
+            "async": 1,
+            "params": [
+                {
+                    "name": "doc",
+                    "description": "Document to close",
+                    "type": "CodeMirror.Doc",
+                    "optional": true
+                },
+                {
+                    "name": "cb",
+                    "description": "Callback",
+                    "type": "Function",
+                    "optional": true
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 325,
+            "description": "Close all open documents",
+            "itemtype": "method",
+            "name": "closeAll",
+            "async": 1,
+            "params": [
+                {
+                    "name": "cb",
+                    "description": "",
+                    "type": "Function",
+                    "optional": true
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 349,
+            "description": "Find an open CodeMirror document by ID",
+            "itemtype": "method",
+            "name": "findDocById",
+            "params": [
+                {
+                    "name": "id",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "CodeMirror.Doc"
+            },
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 364,
+            "description": "Find an open CodeMirror document by path",
+            "itemtype": "method",
+            "name": "findDocByPath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "CodeMirror.Doc"
+            },
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 379,
+            "description": "Given a document, find it's tab",
+            "itemtype": "method",
+            "name": "findTabByDoc",
+            "params": [
+                {
+                    "name": "doc",
+                    "description": "",
+                    "type": "CodeMirror.Doc"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "JQuery"
+            },
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 398,
+            "itemtype": "method",
+            "name": "onTabChange",
+            "access": "private",
+            "tagname": "",
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 440,
+            "itemtype": "method",
+            "name": "onDocChange",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "doc",
+                    "description": ""
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 450,
+            "access": "private",
+            "tagname": "",
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 457,
+            "description": "Convert a file path to a human readable title suitable for showing on a tab, for instance",
+            "itemtype": "method",
+            "name": "pathToTitle",
+            "satic": "",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 489,
+            "description": "Create and return a new Nodeit instance",
+            "itemtype": "method",
+            "name": "create",
+            "params": [
+                {
+                    "name": "opts",
+                    "description": "",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Nodeit"
+            },
+            "class": "nodeit (module)"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/util/codemirror.js:10"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/nodeit.js:104"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/nodeit.js:113"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/nodeit.js:349"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/nodeit.js:364"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/nodeit.js:379"
+        },
+        {
+            "message": "unknown tag: satic",
+            "line": " lib/nodeit.js:457"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/nodeit.js:457"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/nodeit.js:489"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/nodeit.js:450"
+        }
+    ]
+}
