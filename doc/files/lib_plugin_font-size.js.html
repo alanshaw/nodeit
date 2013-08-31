@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>lib/bridge.js - nodeit</title>
+    <title>lib/plugin/font-size.js - nodeit</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -92,73 +92,124 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: lib/bridge.js</h1>
+                        <h1 class="file-heading">File: lib/plugin/font-size.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-require(&quot;setimmediate&quot;)
+var events = require(&quot;events&quot;)
+  , inherits = require(&quot;inherits&quot;)
 
 /**
- * A noop bridge that simply logs calls to the console.
- * Can be used as a reference to what methods must be implemented by a container
- * @class bridge
+ * @class FontSizePlugin
+ * @constructor
+ * @param {Nodeit} nodeit
+ */
+function FontSizePlugin (nodeit) {
+  this.nodeit = nodeit
+  
+  // TODO: This should be passed as config option
+  this.dflt = parseInt(this.getEditorEl().css(&quot;font-size&quot;), 10)
+  this.current = this.dflt
+  this.sizes = {} // Current font sizes keyed by doc ID
+  
+  nodeit.on(&quot;docOpen&quot;, this.onDocOpen.bind(this))
+  nodeit.on(&quot;docNew&quot;, this.onDocNew.bind(this))
+  nodeit.on(&quot;docSwap&quot;, this.onDocSwap.bind(this))
+  
+  nodeit.log(&quot;Default font size&quot;, this.dflt, &quot;px&quot;)
+}
+
+inherits(FontSizePlugin, events.EventEmitter)
+
+/**
+ * Change the font size of the current document
+ * @method changeSize
+ * @param {int} size New font size in px
+ */
+FontSizePlugin.prototype.changeSize = function (size) {
+  size = size &lt; 8 ? 8 : size
+  
+  if (this.current == size) return;
+  
+  var last = this.current
+    , doc = this.nodeit.getEditor().getDoc()
+  
+  this.sizes[doc.id] = this.current = size
+  
+  this.nodeit.log(&quot;Changing font size to&quot;, size)
+  
+  this.getEditorEl().css(&quot;font-size&quot;, size)
+  this.nodeit.getEditor().refresh()
+  
+  this.emit(&quot;change&quot;, size, last)
+}
+
+/**
+ * Increase font size of current document
+ * @method increase
+ */
+FontSizePlugin.prototype.increase = function () {
+  this.changeSize(this.current + 2)
+}
+
+/**
+ * Decrease font size of current document
+ * @method decrease
+ */
+FontSizePlugin.prototype.decrease = function () {
+  this.changeSize(this.current - 2)
+}
+
+/**
+ * Reset font size of current document
+ * @method reset
+ */
+FontSizePlugin.prototype.reset = function () {
+  this.changeSize(this.dflt)
+}
+
+/**
+ * @private
+ */
+FontSizePlugin.prototype.getEditorEl = function () {
+  return $(this.nodeit.getEditor().getWrapperElement())
+}
+
+/**
+ * @private
+ */
+FontSizePlugin.prototype.onDocOpen = function () {
+  this.changeSize(this.dflt)
+}
+
+/**
+ * @private
+ */
+FontSizePlugin.prototype.onDocNew = function () {
+  this.changeSize(this.dflt)
+}
+
+/**
+ * @private
+ */
+FontSizePlugin.prototype.onDocSwap = function (doc) {
+  this.changeSize(this.sizes[doc.id])
+}
+
+/**
+ * @class font-size
  * @static
  */
 module.exports = {
   /**
-   * Log to the container&#x27;s console
-   * @method log
-   */
-  log: console.log,
-
-  /**
-   * Signal to the bridge that nodeit is ready
-   * @method ready
-   */
-  ready: function () {
-    this.log(&quot;Ready&quot;)
-  },
-
-  /**
-   * Save a file to disk
-   * @method save
-   * @async
-   * @param {String} path
-   * @param {String} contents
-   * @param {Function} cb Callback
-   */
-  save: function (path, contents, cb) {
-    this.log(&quot;Save&quot;, path)
-    setImmediate(function () {
-      cb(null, path, contents)
-    })
-  },
-
-  /**
-   * Open a file and retrieve contents. If no path, prompt the user to choose a file to open
-   * @method open
-   * @async
-   * @param {String} path
+   * Create and return a new FontSizePlugin instance
+   * @method create
+   * @param {Nodeit} nodeit
    * @param {Function} cb
    */
-  open: function (path, cb) {
-    this.log(&quot;Open&quot;, path)
-    setImmediate(function () {
-      cb(null, path, &quot;Nothing to see here&quot;)
-    })
-  },
-
-  /**
-   * Called by nodeit when a file is closed. Return an error in the callback to cancel.
-   * @method close
-   * @async
-   * @param {String} path
-   * @param {String} contents
-   * @param {Function} cb
-   */
-  close: function (path, contents, cb) {
-    this.log(&quot;Close&quot;, path)
-    setImmediate(cb)
+  create: function (nodeit, cb) {
+    var plugin = new FontSizePlugin(nodeit)
+    cb(null, plugin)
   }
 }
     </pre>

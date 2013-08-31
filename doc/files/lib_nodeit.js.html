@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.2</em>
+            <em>API Docs for: 0.1.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -44,6 +44,10 @@
                 <li><a href="../classes/bridge.html">bridge</a></li>
             
                 <li><a href="../classes/codemirror.html">codemirror</a></li>
+            
+                <li><a href="../classes/font-size.html">font-size</a></li>
+            
+                <li><a href="../classes/FontSizePlugin.html">FontSizePlugin</a></li>
             
                 <li><a href="../classes/Nodeit.html">Nodeit</a></li>
             
@@ -99,6 +103,7 @@ var events = require(&quot;events&quot;)
   , cmUtil = require(&quot;./util/codemirror&quot;)
   , bridge = require(&quot;./bridge&quot;)
   , async = require(&quot;async&quot;)
+  , plugins = require(&quot;./plugin&quot;)
 
 require(&quot;setimmediate&quot;)
 require(&quot;codemirror&quot;)
@@ -127,6 +132,7 @@ function Nodeit (opts) {
       dragAndDrop: true
     })
   this.docs = []
+  this.plugins = {}
   
   chromeTabs.init({
     $shell: this.tabsEl,
@@ -138,7 +144,16 @@ function Nodeit (opts) {
   
   $(window).resize(this.onWindowResize.bind(this)).resize()
   
-  setImmediate(function () {
+  // Register built in plugins
+  var pluginInitTasks = Object.keys(plugins).map(function (id) {
+    return function (cb) {
+      this.plugin(id, plugins[id], cb)
+    }.bind(this)
+  }.bind(this))
+  
+  // When the plugins are ready, nodeit is ready
+  async.parallel(pluginInitTasks, function (er) {
+    if (er) return console.error(&quot;Failed to init built in plugins&quot;, er)
     this.emit(&quot;ready&quot;)
     this.bridge.ready()
   }.bind(this))
@@ -276,7 +291,9 @@ Nodeit.prototype.open = function (path, cb) {
   this.bridge.open(path, function (er, path, contents) {
     if (er) return cb(er)
     
-    cmUtil.loadMode(cmUtil.pathToMode(path), function (er, mode) {
+    var mode = cmUtil.pathToMode(path)
+    
+    cmUtil.loadMode(mode, function (er) {
       if (er) return cb(er)
       
       var doc = CodeMirror.Doc(contents, mode, 0)
@@ -346,7 +363,10 @@ Nodeit.prototype.save = function (doc, cb) {
     }
     
     // Update mode
-    cmUtil.loadMode(cmUtil.pathToMode(path), function (er, mode) {
+    var mode = cmUtil.pathToMode(path)
+    
+    cmUtil.loadMode(mode, function (er) {
+      if (er) return cb(er)
       this.editor.setOption(&quot;mode&quot;, mode)
     }.bind(this))
     
@@ -546,6 +566,63 @@ Nodeit.prototype.onDocChange = function (doc) {
  */
 Nodeit.prototype.onWindowResize = function () {
   this.editorEl.height($(window).height() - this.tabsEl.outerHeight())
+}
+
+/**
+ * Register a plugin with nodeit. Nodeit will call a function called &quot;create&quot; or &quot;init&quot; on the passed plugin object
+ * (if either exists) passing them the nodeit instance and a callback function. The plugin MUST call the callback 
+ * function when it has completed creating the instance or initialising the instance.
+ * @method plugin
+ * @async
+ * @param {String} id Unique identifier for the plugin 
+ * @param {Object} plugin The plugin instance (with init method) OR module (with create method)
+ * @param {Function} cb Success/failure callback
+ */
+Nodeit.prototype.plugin = function (id, plugin, cb) {
+  console.log(&quot;Registering plugin&quot;, id)
+  
+  // Ensure plugin initialisation is async even if plugin author doesn&#x27;t make it so
+  setImmediate(function () {
+
+    if (typeof plugin.create == &quot;function&quot;) {
+      return plugin.create(this, function (er, instance) {
+        if (er) {
+          console.error(&quot;Failed to create plugin&quot;, id)
+          return cb(er)
+        }
+
+        this.plugins[id] = instance || plugin
+        cb(null, this.plugins[id])
+
+      }.bind(this))
+    }
+    
+    if (typeof plugin.init == &quot;function&quot;) {
+      return plugin.init(this, function (er, instance) {
+        if (er) {
+          console.error(&quot;Failed to initialise plugin&quot;, id)
+          return cb(er)
+        }
+        
+        this.plugins[id] = instance || plugin
+        cb(null, this.plugins[id])
+        
+      }.bind(this))
+    }
+    
+    console.error(&quot;Failed to init or create&quot;, id)
+    cb(new Error(id + &quot; has no init or create function to call&quot;))
+    
+  }.bind(this))
+}
+
+/**
+ * Get a plugin instance by ID
+ * @method getPlugin
+ * @param {String} id
+ */
+Nodeit.prototype.getPlugin = function (id) {
+  return this.plugins[id]
 }
 
 /**

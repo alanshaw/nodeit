@@ -2,10 +2,20 @@
     "project": {
         "name": "nodeit",
         "description": "NodeJS text editor",
-        "version": "0.0.2",
+        "version": "0.1.0",
         "url": ""
     },
     "files": {
+        "lib/plugin/font-size.js": {
+            "name": "lib/plugin/font-size.js",
+            "modules": {},
+            "classes": {
+                "FontSizePlugin": 1,
+                "font-size": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "lib/util/codemirror.js": {
             "name": "lib/util/codemirror.js",
             "modules": {},
@@ -37,6 +47,37 @@
     },
     "modules": {},
     "classes": {
+        "FontSizePlugin": {
+            "name": "FontSizePlugin",
+            "shortname": "FontSizePlugin",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/plugin/font-size.js",
+            "line": 4,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "nodeit",
+                    "description": "",
+                    "type": "Nodeit"
+                }
+            ]
+        },
+        "font-size": {
+            "name": "font-size",
+            "shortname": "font-size",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/plugin/font-size.js",
+            "line": 101,
+            "static": 1
+        },
         "codemirror": {
             "name": "codemirror",
             "shortname": "codemirror",
@@ -72,7 +113,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "lib/nodeit.js",
-            "line": 12,
+            "line": 13,
             "is_constructor": 1,
             "params": [
                 {
@@ -92,11 +133,98 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "lib/nodeit.js",
-            "line": 484,
+            "line": 557,
             "static": 1
         }
     },
     "classitems": [
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 26,
+            "description": "Change the font size of the current document",
+            "itemtype": "method",
+            "name": "changeSize",
+            "params": [
+                {
+                    "name": "size",
+                    "description": "New font size in px",
+                    "type": "Int"
+                }
+            ],
+            "class": "FontSizePlugin"
+        },
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 49,
+            "description": "Increase font size of current document",
+            "itemtype": "method",
+            "name": "increase",
+            "class": "FontSizePlugin"
+        },
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 57,
+            "description": "Decrease font size of current document",
+            "itemtype": "method",
+            "name": "decrease",
+            "class": "FontSizePlugin"
+        },
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 65,
+            "description": "Reset font size of current document",
+            "itemtype": "method",
+            "name": "reset",
+            "class": "FontSizePlugin"
+        },
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 73,
+            "access": "private",
+            "tagname": "",
+            "class": "FontSizePlugin"
+        },
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 80,
+            "access": "private",
+            "tagname": "",
+            "class": "FontSizePlugin"
+        },
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 87,
+            "access": "private",
+            "tagname": "",
+            "class": "FontSizePlugin"
+        },
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 94,
+            "access": "private",
+            "tagname": "",
+            "class": "FontSizePlugin"
+        },
+        {
+            "file": "lib/plugin/font-size.js",
+            "line": 106,
+            "description": "Create and return a new FontSizePlugin instance",
+            "itemtype": "method",
+            "name": "create",
+            "params": [
+                {
+                    "name": "nodeit",
+                    "description": "",
+                    "type": "Nodeit"
+                },
+                {
+                    "name": "cb",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "font-size"
+        },
         {
             "file": "lib/util/codemirror.js",
             "line": 10,
@@ -106,7 +234,8 @@
             "params": [
                 {
                     "name": "path",
-                    "description": ""
+                    "description": "",
+                    "type": "String"
                 }
             ],
             "return": {
@@ -125,11 +254,13 @@
             "params": [
                 {
                     "name": "mode",
-                    "description": ""
+                    "description": "The mode to load",
+                    "type": "String"
                 },
                 {
                     "name": "cb",
-                    "description": ""
+                    "description": "Callback on completion",
+                    "type": "Function"
                 }
             ],
             "class": "codemirror"
@@ -225,7 +356,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 55,
+            "line": 66,
             "description": "When nodeit is ready",
             "itemtype": "event",
             "name": "ready",
@@ -233,7 +364,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 59,
+            "line": 70,
             "description": "When a new document is opened",
             "itemtype": "event",
             "name": "docNew",
@@ -248,7 +379,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 64,
+            "line": 75,
             "description": "When a document is opened",
             "itemtype": "event",
             "name": "docOpen",
@@ -263,7 +394,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 69,
+            "line": 80,
             "description": "When a document is saved to disk, or whatever",
             "itemtype": "event",
             "name": "docSave",
@@ -278,7 +409,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 74,
+            "line": 85,
             "description": "When a document is closed",
             "itemtype": "event",
             "name": "docClose",
@@ -293,7 +424,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 79,
+            "line": 90,
             "description": "When the current document is swapped for another",
             "itemtype": "event",
             "name": "docSwap",
@@ -313,7 +444,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 87,
+            "line": 98,
             "description": "Set the nodeit bridge object",
             "itemtype": "method",
             "name": "setBridge",
@@ -327,7 +458,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 96,
+            "line": 107,
             "description": "Log a message to the bridge",
             "itemtype": "method",
             "name": "log",
@@ -335,7 +466,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 104,
+            "line": 115,
             "description": "Get the number of open docs",
             "itemtype": "method",
             "name": "count",
@@ -347,7 +478,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 113,
+            "line": 124,
             "description": "Retrieve the CodeMirror editor instance",
             "itemtype": "method",
             "name": "getEditor",
@@ -359,7 +490,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 122,
+            "line": 133,
             "description": "Create a new file",
             "itemtype": "method",
             "name": "neu",
@@ -376,7 +507,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 158,
+            "line": 169,
             "description": "Open a file",
             "itemtype": "method",
             "name": "open",
@@ -399,7 +530,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 216,
+            "line": 229,
             "description": "Save the passed document to disk, or whatever. If no document passed, default to current document.",
             "itemtype": "method",
             "name": "save",
@@ -422,7 +553,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 265,
+            "line": 281,
             "description": "Close the passed document, prompting for save if changed. If no document passed, default to current document.",
             "itemtype": "method",
             "name": "close",
@@ -445,7 +576,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 325,
+            "line": 341,
             "description": "Close all open documents",
             "itemtype": "method",
             "name": "closeAll",
@@ -462,7 +593,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 349,
+            "line": 365,
             "description": "Find an open CodeMirror document by ID",
             "itemtype": "method",
             "name": "findDocById",
@@ -480,7 +611,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 364,
+            "line": 380,
             "description": "Find an open CodeMirror document by path",
             "itemtype": "method",
             "name": "findDocByPath",
@@ -499,7 +630,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 379,
+            "line": 395,
             "description": "Given a document, find it's tab",
             "itemtype": "method",
             "name": "findTabByDoc",
@@ -518,7 +649,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 398,
+            "line": 414,
             "itemtype": "method",
             "name": "onTabChange",
             "access": "private",
@@ -527,7 +658,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 440,
+            "line": 456,
             "itemtype": "method",
             "name": "onDocChange",
             "access": "private",
@@ -542,14 +673,55 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 450,
+            "line": 466,
             "access": "private",
             "tagname": "",
             "class": "Nodeit"
         },
         {
             "file": "lib/nodeit.js",
-            "line": 457,
+            "line": 473,
+            "description": "Register a plugin with nodeit. Nodeit will call a function called \"create\" or \"init\" on the passed plugin object\n(if either exists) passing them the nodeit instance and a callback function. The plugin MUST call the callback \nfunction when it has completed creating the instance or initialising the instance.",
+            "itemtype": "method",
+            "name": "plugin",
+            "async": 1,
+            "params": [
+                {
+                    "name": "id",
+                    "description": "Unique identifier for the plugin",
+                    "type": "String"
+                },
+                {
+                    "name": "plugin",
+                    "description": "The plugin instance (with init method) OR module (with create method)",
+                    "type": "Object"
+                },
+                {
+                    "name": "cb",
+                    "description": "Success/failure callback",
+                    "type": "Function"
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 521,
+            "description": "Get a plugin instance by ID",
+            "itemtype": "method",
+            "name": "getPlugin",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "class": "Nodeit"
+        },
+        {
+            "file": "lib/nodeit.js",
+            "line": 530,
             "description": "Convert a file path to a human readable title suitable for showing on a tab, for instance",
             "itemtype": "method",
             "name": "pathToTitle",
@@ -569,7 +741,7 @@
         },
         {
             "file": "lib/nodeit.js",
-            "line": 489,
+            "line": 562,
             "description": "Create and return a new Nodeit instance",
             "itemtype": "method",
             "name": "create",
@@ -594,39 +766,55 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " lib/nodeit.js:104"
+            "line": " lib/nodeit.js:115"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " lib/nodeit.js:113"
+            "line": " lib/nodeit.js:124"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " lib/nodeit.js:349"
+            "line": " lib/nodeit.js:365"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " lib/nodeit.js:364"
+            "line": " lib/nodeit.js:380"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " lib/nodeit.js:379"
+            "line": " lib/nodeit.js:395"
         },
         {
             "message": "unknown tag: satic",
-            "line": " lib/nodeit.js:457"
+            "line": " lib/nodeit.js:530"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " lib/nodeit.js:457"
+            "line": " lib/nodeit.js:530"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " lib/nodeit.js:489"
+            "line": " lib/nodeit.js:562"
         },
         {
             "message": "Missing item type",
-            "line": " lib/nodeit.js:450"
+            "line": " lib/plugin/font-size.js:73"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/plugin/font-size.js:80"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/plugin/font-size.js:87"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/plugin/font-size.js:94"
+        },
+        {
+            "message": "Missing item type",
+            "line": " lib/nodeit.js:466"
         }
     ]
 }
